@@ -51,6 +51,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
         let category = categories[indexPath.row]
         cell.topLabel.text = category.categoryname
+        cell.bottomLabel.text = categories.count
         cell.cellImage.image = UIImage(named: category.imagename!)
 
         return cell
