@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
@@ -17,11 +18,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        navigationController?.navigationBar.barTintColor = UIColor.orangeColor()
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
-        navigationController?.navigationBar.tintColor = UIColor.whiteColor()
-
+        navigationController?.navigationBar.barTintColor = UIColor.orange
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.tintColor = UIColor.white
+        
         categories = CoreDataManager.getData(entityName: "Categories") as! [Categories]
+
         if categories.count == 0 {
             CoreDataManager.loadCategories()
             categories = CoreDataManager.getData(entityName: "Categories") as! [Categories]
@@ -50,21 +52,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // cell.cellImage?.image = UIImage(named: "president")
 
         let category = categories[indexPath.row]
-        cell.topLabel.text = category.categoryname
-        cell.bottomLabel.text = categories.count
+        cell.topLabel.text = category.categoriesname
+        cell.bottomLabel.text = String(categories.count)
         cell.cellImage.image = UIImage(named: category.imagename!)
 
         return cell
     }
 
-    func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
-        selectCategoryId = categories[indexPath.row].id as? Int
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        selectedCategoryId = Int(categories[indexPath.row].id)
         return indexPath
     }
 
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let viewController = segue.destinationViewController as! DetailViewController
-        viewController.categoryId = selectCategoryId!
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let viewController = segue.destination as! DetailViewController
+        viewController.categoryId = selectedCategoryId!
+
     }
 }
 

@@ -16,14 +16,18 @@ class CoreDataManager: NSObject {
     }
 
     static func getData(entityName:String, predicate:NSPredicate?=nil) -> [NSManagedObject]{
-        var resultsManagedObject:[NSManagedObject] = []
 
+        var resultsManagedObject:[NSManagedObject] = []
+        let managedObject = getManagedObject()
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+        request.returnsObjectsAsFaults = false
+
+        if predicate != nil {
+            request.predicate = predicate
+            print(predicate!)
+        }
+            
         do{
-            let managedObject = getManagedObject()
-            let request = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
-            if predicate != nil {
-                request.predicate = predicate
-            }
             let results = try managedObject.fetch(request)
             resultsManagedObject = results as! [NSManagedObject]
         }
@@ -33,30 +37,54 @@ class CoreDataManager: NSObject {
         return resultsManagedObject
     }
 
+    static func deleteData(entityName:String){
+        
+        let managedObject = getManagedObject()
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+        request.returnsObjectsAsFaults = false
+        
+        do{
+            let results = try managedObject.fetch(request)
+            for result in results {
+                managedObject.delete(result as! NSManagedObject)
+            }
+        }
+        catch{
+            print("there are an error deleting data")
+        }
+    }
+    
     static func loadCategories(){
 
         let managedObject = getManagedObject()
-
-        let category1 = NSEntityDescription.insertNewObject(forEntityName: "Categories", into: managedObject) as! Categories
-        category1.categoriesname = "President"
-        category1.imagename = "president"
-        category1.id = 1
-
-        let category2 = NSEntityDescription.insertNewObject(forEntityName: "Categories", into: managedObject) as! Categories
-        category2.categoriesname = "Cities"
-        category2.imagename = "cities"
-        category2.id = 2
-
-        let category3 = NSEntityDescription.insertNewObject(forEntityName: "Categories", into: managedObject) as! Categories
-        category3.categoriesname = "Skyscapers"
-        category3.imagename = "skyscapers"
-        category3.id = 3
-
-        let category4 = NSEntityDescription.insertNewObject(forEntityName: "Categories", into: managedObject) as! Categories
-        category4.categoriesname = "Actors"
-        category4.imagename = "actors"
-        category4.id = 4
-
+        
+        let entity1 = NSEntityDescription.entity(forEntityName: "Categories", in: managedObject)
+        let category1 = NSManagedObject(entity: entity1!, insertInto: managedObject)
+        category1.setValue("President", forKey: "categoriesname")
+        category1.setValue("president", forKey: "imagename")
+        category1.setValue(1, forKey: "id")
+        
+        
+        let entity2 = NSEntityDescription.entity(forEntityName: "Categories", in: managedObject)
+        let category2 = NSManagedObject(entity: entity2!, insertInto: managedObject)
+        category2.setValue("Cities", forKey: "categoriesname")
+        category2.setValue("cities", forKey: "imagename")
+        category2.setValue(2, forKey: "id")
+        
+        
+        let entity3 = NSEntityDescription.entity(forEntityName: "Categories", in: managedObject)
+        let category3 = NSManagedObject(entity: entity3!, insertInto: managedObject)
+        category3.setValue("Skyscapers", forKey: "categoriesname")
+        category3.setValue("skyscapers", forKey: "imagename")
+        category3.setValue(3, forKey: "id")
+        
+        
+        let entity4 = NSEntityDescription.entity(forEntityName: "Categories", in: managedObject)
+        let category4 = NSManagedObject(entity: entity4!, insertInto: managedObject)
+        category4.setValue("Actors", forKey: "categoriesname")
+        category4.setValue("actors", forKey: "imagename")
+        category4.setValue(4, forKey: "id")
+        
         do{
             try managedObject.save()
         }
@@ -68,29 +96,30 @@ class CoreDataManager: NSObject {
     static func loadPresidentQuestions(){
         let managedObject = getManagedObject()
 
-        //James Monroe
-        let question1 = NSEntityDescription.insertNewObject(forEntityName: "Questions", into: managedObject) as! Questions
-        question1.question = "Who was president from 1817 - 1825?"
-        question1.correctanswer = 1
-        question1.id = 1
-        question1.categoryid = 1
-        question1.answerchoices = "1,2,3,4"
-
-        //Rutherford B. Hayes
-        let question2 = NSEntityDescription.insertNewObject(forEntityName: "Questions", into: managedObject) as! Questions
-        question2.question = "Who was president from 1877 - 1881?"
-        question2.correctanswer = 2
-        question2.id = 2
-        question2.categoryid = 1
-        question2.answerchoices = "2,3,4,5"
-
-        //Franklin Pierce
-        let question3 = NSEntityDescription.insertNewObject(forEntityName: "Questions", into: managedObject) as! Questions
-        question3.question = "Who was president from 1853 - 1857?"
-        question3.correctanswer = 5
-        question3.id = 3
-        question3.categoryid = 1
-        question3.answerchoices = "1,3,4,5"
+        let entity1 = NSEntityDescription.entity(forEntityName: "Questions", in: managedObject)
+        let question1 = NSManagedObject(entity: entity1!, insertInto: managedObject)
+        question1.setValue("Who was president from 1817 - 1825?", forKey: "question")
+        question1.setValue(1, forKey: "correctanswer")
+        question1.setValue(1, forKey: "id")
+        question1.setValue(1, forKey: "categoryid")
+        question1.setValue("1,2,3,4", forKey: "answerchoices")
+        
+        let entity2 = NSEntityDescription.entity(forEntityName: "Questions", in: managedObject)
+        let question2 = NSManagedObject(entity: entity2!, insertInto: managedObject)
+        question2.setValue("Who was president from 1877 - 1881?", forKey: "question")
+        question2.setValue(2, forKey: "correctanswer")
+        question2.setValue(2, forKey: "id")
+        question2.setValue(1, forKey: "categoryid")
+        question2.setValue("2,3,4,5", forKey: "answerchoices")
+        
+        
+        let entity3 = NSEntityDescription.entity(forEntityName: "Questions", in: managedObject)
+        let question3 = NSManagedObject(entity: entity3!, insertInto: managedObject)
+        question3.setValue("Who was president from 1853 - 1857?", forKey: "question")
+        question3.setValue(4, forKey: "correctanswer")
+        question3.setValue(3, forKey: "id")
+        question3.setValue(1, forKey: "categoryid")
+        question3.setValue("1,3,4,5", forKey: "answerchoices")
 
         do{
             try managedObject.save()
@@ -104,35 +133,35 @@ class CoreDataManager: NSObject {
 
         let managedObject = getManagedObject()
 
-        let answer11 = NSEntityDescription.insertNewObject(forEntityName: "Answers", into: managedObject) as! Answers
-        answer11.answer = "James Monroe"
-        answer11.id = 1
-        answer11.categoryid = 1
-        // answer11.questionid = 1
-
-        let answer12 = NSEntityDescription.insertNewObject(forEntityName: "Answers", into: managedObject) as! Answers
-        answer12.answer = "Rutherford B. Hayes"
-        answer12.id = 2
-        answer12.categoryid = 1
-        // answer12.questionid = 2
-
-        let answer13 = NSEntityDescription.insertNewObject(forEntityName: "Answers", into: managedObject) as! Answers
-        answer13.answer = "Grover Cleveland"
-        answer13.id = 3
-        answer13.categoryid = 1
-        // answer13.questionid = 0
-
-        let answer14 = NSEntityDescription.insertNewObject(forEntityName: "Answers", into: managedObject) as! Answers
-        answer14.answer = "James A. Garfield"
-        answer14.id = 4
-        answer14.categoryid = 1
-        // answer13.questionid = 0
-
-        let answer15 = NSEntityDescription.insertNewObject(forEntityName: "Answers", into: managedObject) as! Answers
-        answer15.answer = "Franklin Pierce"
-        answer15.id = 5
-        answer15.categoryid = 1
-        // answer15.questionid = 3
+        let entity1 = NSEntityDescription.entity(forEntityName: "Answers", in: managedObject)
+        let answer1 = NSManagedObject(entity: entity1!, insertInto: managedObject)
+        answer1.setValue("James Monroe", forKey: "answer")
+        answer1.setValue(1, forKey: "id")
+        answer1.setValue(1, forKey: "categoryid")
+        
+        let entity2 = NSEntityDescription.entity(forEntityName: "Answers", in: managedObject)
+        let answer2 = NSManagedObject(entity: entity2!, insertInto: managedObject)
+        answer2.setValue("Rutherford B. Hayes", forKey: "answer")
+        answer2.setValue(2, forKey: "id")
+        answer2.setValue(1, forKey: "categoryid")
+        
+        let entity3 = NSEntityDescription.entity(forEntityName: "Answers", in: managedObject)
+        let answer3 = NSManagedObject(entity: entity3!, insertInto: managedObject)
+        answer3.setValue("Grover Cleveland", forKey: "answer")
+        answer3.setValue(3, forKey: "id")
+        answer3.setValue(1, forKey: "categoryid")
+        
+        let entity4 = NSEntityDescription.entity(forEntityName: "Answers", in: managedObject)
+        let answer4 = NSManagedObject(entity: entity4!, insertInto: managedObject)
+        answer4.setValue("James A. Garfield", forKey: "answer")
+        answer4.setValue(4, forKey: "id")
+        answer4.setValue(1, forKey: "categoryid")
+        
+        let entity5 = NSEntityDescription.entity(forEntityName: "Answers", in: managedObject)
+        let answer5 = NSManagedObject(entity: entity5!, insertInto: managedObject)
+        answer5.setValue("Franklin Pierce", forKey: "answer")
+        answer5.setValue(5, forKey: "id")
+        answer5.setValue(1, forKey: "categoryid")
 
         do{
             try managedObject.save()

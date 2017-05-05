@@ -195,6 +195,10 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="button1" destination="2L2-8g-WUQ" id="QPO-F8-NTr"/>
+                        <outlet property="button2" destination="JIQ-bw-79g" id="T2N-ce-cof"/>
+                        <outlet property="button3" destination="Goc-S1-aOd" id="z2V-tq-mMw"/>
+                        <outlet property="button4" destination="fbN-bY-DOl" id="jeV-Vt-l7H"/>
                         <outlet property="questionLabel" destination="9KE-Z9-EG9" id="Uca-GE-5tJ"/>
                     </connections>
                 </viewController>

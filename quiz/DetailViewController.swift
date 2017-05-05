@@ -19,7 +19,7 @@ class DetailViewController: UIViewController {
     var categoryId:Int = 0
     var questions:[Questions] = []
     var answers:[Answers] = []
-    var buttonArray = []
+    var buttonArray:[UIButton] = []
     var question:Questions?
     var answerIds:[Int] = []
 
@@ -27,92 +27,105 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Next", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(DetailViewController.nextQuiz))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Next", style: UIBarButtonItemStyle.plain, target: self, action: #selector(DetailViewController.nextQuiz))
 
         questions = CoreDataManager.getData(entityName: "Questions") as! [Questions]
+
         if questions.count == 0 {
             CoreDataManager.loadPresidentQuestions()
             questions = CoreDataManager.getData(entityName: "Questions") as! [Questions]
         }
+        else if questions.count > 3 {
+            CoreDataManager.deleteData(entityName: "Questions")
+            CoreDataManager.loadPresidentQuestions()
+            questions = CoreDataManager.getData(entityName: "Questions") as! [Questions]
+        }
 
+        answers = CoreDataManager.getData(entityName: "Answers") as! [Answers]
+        
         if answers.count == 0 {
+            CoreDataManager.loadPresidentAnswers()
+            answers = CoreDataManager.getData(entityName: "Answers") as! [Answers]
+        }
+        else if answers.count > 5 {
+            CoreDataManager.deleteData(entityName: "Answers")
             CoreDataManager.loadPresidentAnswers()
             answers = CoreDataManager.getData(entityName: "Answers") as! [Answers]
         }
 
         buttonArray = [button1, button2, button3, button4]
-
     }
 
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         questions = CoreDataManager.getData(entityName: "Questions", predicate: NSPredicate(format:"categoryid=%@", "\(self.categoryId)")) as! [Questions]
 
         nextQuiz()
-        assignButtonText(answers)
+        assignButtonText(answers: answers)
     }
 
     @IBAction func GiveUpButtonClick(_ sender: Any) {
         for b in buttonArray {
-            if b.tag == question?.correctanswer {
-                b.setTitle("Correct!", forState: UIControlState.Normal)
+            if b.tag == Int((question?.correctanswer)!) {
+                b.setTitle("Correct!", for: UIControlState.normal)
             }
         }
     }
 
     @IBAction func button1Click(_ sender: Any) {
-        isCorrectSelection(button1)
+        isCorrectSelection(button: button1)
     }
     @IBAction func button2Click(_ sender: Any) {
-        isCorrectSelection(button2)
+        isCorrectSelection(button: button2)
     }
     @IBAction func button3Click(_ sender: Any) {
-        isCorrectSelection(button3)
+        isCorrectSelection(button: button3)
     }
     @IBAction func button4Click(_ sender: Any) {
-        isCorrectSelection(button4)
+        isCorrectSelection(button: button4)
     }
 
     func isCorrectSelection(button:UIButton) {
-        button.setTitle("Incorrect!", forState: UIControlState.Normal)
-        if button.tag == question?.correctanswer {
-            button.setTitle("Correct!", forState: UIControlState.Normal)
+        button.setTitle("Incorrect!", for: UIControlState.normal)
+        if button.tag == Int((question?.correctanswer)!) {
+            button.setTitle("Correct!", for: UIControlState.normal)
         }
     }
 
     func nextQuiz() {
-        let number = Int(arc4random_uniform(UInt32(questions.count)))
-        question = questions[number]
-        let answerResults = CoreDataManager.getData("Answers", predicate:NSPredicate(format: "id in {\(question!.answerchoices!)}")) as! [Answers]
+        let number = Int(arc4random_uniform(10))
+        question = questions[number % questions.count]
+        let answerResults = CoreDataManager.getData(entityName: "Answers", predicate:NSPredicate(format: "id in {\(question!.answerchoices!)}")) as! [Answers]
 
         createAnswerIds()
         questionLabel.text = question!.question
-        assignButtonText(answerResults)
+        assignButtonText(answers: answerResults)
     }
 
     func assignButtonText(answers: [Answers]) {
-        let answerIdsShuffled = ShuffleArray(answerIds)
+        let answerIdsShuffled = ShuffleArray(arrayparam: answerIds)
 
-        let answer1 = answers.filter{$0.id == answerIdsShuffled[0]}.first
-        button1.setTitle(answer1?.answer, forState: UIControlState.Normal)
-        button1.tag = answer1!.id as! Int
+        let answer1 = answers.filter{Int($0.id) == answerIdsShuffled[0]}.first
+        button1.setTitle(answer1?.answer, for: UIControlState.normal)
+        button1.tag = Int(answer1!.id)
 
-        let answer2 = answers.filter{$0.id == answerIdsShuffled[1]}.first
-        button2.setTitle(answer2?.answer, forState: UIControlState.Normal)
-        button2.tag = answer2!.id as! Int
+        let answer2 = answers.filter{Int($0.id) == answerIdsShuffled[1]}.first
+        button2.setTitle(answer2?.answer, for: UIControlState.normal)
+        button2.tag = Int(answer2!.id)
 
-        let answer3 = answers.filter{$0.id == answerIdsShuffled[2]}.first
-        button3.setTitle(answer3?.answer, forState: UIControlState.Normal)
-        button3.tag = answer3!.id as! Int
+        let answer3 = answers.filter{Int($0.id) == answerIdsShuffled[2]}.first
+        button3.setTitle(answer3?.answer, for: UIControlState.normal)
+        button3.tag = Int(answer3!.id)
 
-        let answer4 = answers.filter{$0.id == answerIdsShuffled[3]}.first
-        button4.setTitle(answer4?.answer, forState: UIControlState.Normal)
-        button4.tag = answer4!.id as! Int
+        let answer4 = answers.filter{Int($0.id) == answerIdsShuffled[3]}.first
+        button4.setTitle(answer4?.answer, for: UIControlState.normal)
+        button4.tag = Int(answer4!.id)
+
     }
 
     func createAnswerIds() {
         answerIds = []
-        let arr = question?.answerchoices?.componentsSeparatedByString(",").flatMap{Int($0)}
+        let arr = question?.answerchoices?.components(separatedBy: ",").flatMap{Int($0)}
         for i in arr! {
                 answerIds.append(i)
         }
@@ -120,7 +133,7 @@ class DetailViewController: UIViewController {
 
     func ShuffleArray<T>(arrayparam: Array<T>) -> Array<T> {
         var array = arrayparam
-        for var index = array.count - 1; index > 0; index -= 1{
+        for index in ((0 + 1)...array.count - 1).reversed(){
             let j = Int(arc4random_uniform(UInt32(index-1)))
             swap(&array[index], &array[j])
         }

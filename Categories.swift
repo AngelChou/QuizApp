@@ -10,7 +10,6 @@
 import Foundation
 import CoreData
 
-@objc(Categories)
 public class Categories: NSManagedObject {
 
 }

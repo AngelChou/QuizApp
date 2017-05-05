@@ -15,11 +15,11 @@
         <attribute name="categoryid" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="correctanswer" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="questions" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="question" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
+        <element name="Answers" positionX="-36" positionY="9" width="128" height="90"/>
         <element name="Categories" positionX="-63" positionY="-18" width="128" height="90"/>
         <element name="Questions" positionX="-54" positionY="-9" width="128" height="120"/>
-        <element name="Answers" positionX="-36" positionY="9" width="128" height="90"/>
     </elements>
 </model>
