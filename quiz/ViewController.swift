@@ -53,7 +53,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
         let category = categories[indexPath.row]
         cell.topLabel.text = category.categoriesname
-        cell.bottomLabel.text = String(categories.count)
+        cell.bottomLabel.text = String(categories.count) //TODO
         cell.cellImage.image = UIImage(named: category.imagename!)
 
         return cell

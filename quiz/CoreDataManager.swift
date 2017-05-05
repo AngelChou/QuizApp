@@ -24,7 +24,6 @@ class CoreDataManager: NSObject {
 
         if predicate != nil {
             request.predicate = predicate
-            print(predicate!)
         }
             
         do{
@@ -171,4 +170,6 @@ class CoreDataManager: NSObject {
         }
     }
 
+    //TODO: Questions and Answers for other Categories: Cities, Skyscapers, Actors
+    
 }

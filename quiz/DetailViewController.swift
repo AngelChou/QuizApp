@@ -35,11 +35,6 @@ class DetailViewController: UIViewController {
             CoreDataManager.loadPresidentQuestions()
             questions = CoreDataManager.getData(entityName: "Questions") as! [Questions]
         }
-        else if questions.count > 3 {
-            CoreDataManager.deleteData(entityName: "Questions")
-            CoreDataManager.loadPresidentQuestions()
-            questions = CoreDataManager.getData(entityName: "Questions") as! [Questions]
-        }
 
         answers = CoreDataManager.getData(entityName: "Answers") as! [Answers]
         
@@ -47,12 +42,7 @@ class DetailViewController: UIViewController {
             CoreDataManager.loadPresidentAnswers()
             answers = CoreDataManager.getData(entityName: "Answers") as! [Answers]
         }
-        else if answers.count > 5 {
-            CoreDataManager.deleteData(entityName: "Answers")
-            CoreDataManager.loadPresidentAnswers()
-            answers = CoreDataManager.getData(entityName: "Answers") as! [Answers]
-        }
-
+        
         buttonArray = [button1, button2, button3, button4]
     }
 
